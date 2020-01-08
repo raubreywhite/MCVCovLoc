@@ -5,12 +5,15 @@ Version: 0.1.0
 Authors@R: person("Nielsen", "Jens", email = "nls@ssi.dk", role = c("aut", "cre"))
 Description: Read and verify input files.
     Create coverage graphs and maps.
+Depends: R (>= 3.5.0)
 License: GLP-2
 Encoding: UTF-8
 LazyData: true
 Imports:
+    RODBC,
     ggplot2,
     data.table,
+    rgdal,
     sf,
     raster,
     tmap

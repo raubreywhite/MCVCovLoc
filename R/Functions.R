@@ -129,7 +129,7 @@ IndPopData <- function(wdir, StatusDate, IndividuelPopulationFile) {
     stop("ERROR: Duplicated PersonID, BirthDate")
   }
 
-  if (sum(!(IndPop$nuts %in% readRDS(paste0(wdir, "/ShapeFile/NutsNames.RDS"))$NUTS_ID)) > 0) {
+  if (sum(!(IndPop$nuts %in% readRDS(paste0(system.file("ShapeFile", package="MCVCovLoc"), "/NutsNames.RDS"))$NUTS_ID)) > 0) {
     stop("ERROR: Unknown NUTS")
   }
   if (min(nchar(IndPop$nuts)) != max(nchar(IndPop$nuts))) {
@@ -240,7 +240,7 @@ AggPopData <- function(wdir, StatusDate, AggregatedPopulationFile) {
     AggPop <- subset(AggPop, birthyear <= as.numeric(format(as.Date(StatusDate),'%Y')))
   }
 
-  if (sum(!(AggPop$nuts %in% readRDS(paste0(wdir, "/ShapeFile/NutsNames.RDS"))$NUTS_ID)) > 0) {
+  if (sum(!(AggPop$nuts %in% readRDS(paste0(system.file("ShapeFile", package="MCVCovLoc"), "/NutsNames.RDS"))$NUTS_ID)) > 0) {
     stop("ERROR: Unknown NUTS")
   }
   if (min(nchar(AggPop$nuts)) != max(nchar(AggPop$nuts))) {
@@ -288,7 +288,7 @@ AggVacData <- function(wdir, StatusDate, AggregatedMCVFile) {
     AggVac <- subset(VacPop, birthyear <= as.numeric(format(as.Date(StatusDate),'%Y')))
   }
 
-  if (sum(!(AggVac$nuts %in% readRDS(paste0(wdir, "/ShapeFile/NutsNames.RDS"))$NUTS_ID)) > 0) {
+  if (sum(!(AggVac$nuts %in% readRDS(paste0(system.file("ShapeFile", package="MCVCovLoc"), "/NutsNames.RDS"))$NUTS_ID)) > 0) {
     stop("ERROR: Unknown NUTS")
   }
   if (min(nchar(AggVac$nuts)) != max(nchar(AggVac$nuts))) {
@@ -318,6 +318,7 @@ TimeMonth <- function(StartDate, EndDate) {
 #' @param StatusDate Date of status calculation.
 #' @param NUTSlevel NUTS level
 #' @import data.table
+#' @import ggplot2
 #' @return Graphs
 VacCovGraphs <- function(wdir, StatusDate, NUTSlevel) {
 
@@ -337,11 +338,11 @@ VacCovGraphs <- function(wdir, StatusDate, NUTSlevel) {
 
   VacMonth$birthyear <- as.factor(VacMonth$birthyear)
 
-  library(ggplot2)
+  # library(ggplot2)
 
   for (n in unique(VacMonth$nuts)) {
 
-    text <- subset(readRDS(paste0(wdir, "/ShapeFile/NutsNames.RDS")), NUTS_ID == n)$NUTS_NAME
+    text <- subset(readRDS(paste0(system.file("ShapeFile", package="MCVCovLoc"), "/NutsNames.RDS")), NUTS_ID == n)$NUTS_NAME
 
     ### Coverage by vac-age in months and BirthYear ###
     pdata <- subset(VacMonth, (nuts == n) & (vacagemonth <= 150))
@@ -398,6 +399,9 @@ VacCovGraphs <- function(wdir, StatusDate, NUTSlevel) {
 #' @param BirthCohort Birth year of cohort
 #' @param dose First or second dose
 #' @import data.table
+#' @import sf
+#' @import raster
+#' @import tmap
 #' @return map
 MapCov <- function(wdir, StatusDate, BirthCohort, dose) {
 
@@ -413,9 +417,9 @@ MapCov <- function(wdir, StatusDate, BirthCohort, dose) {
   X$CovD2 <- 100*X$cVacD2/X$N
   X <- setDT(X)[birthyear == BirthCohort, .SD[.N], by = nuts]
 
-  library(sf)
-  library(raster)
-  library(tmap)
+  # library(sf)
+  # library(raster)
+  # library(tmap)
   tmap_options(show.messages = FALSE)
   NUTS_spdf <- rgdal::readOGR(system.file("ShapeFile", package="MCVCovLoc"), "NUTS_RG_01M_2016_4326", verbose = FALSE)
   # map1 <- merge(NUTS_spdf, X, by.x = "NUTS_ID", by.y = "nuts", duplicateGeoms = TRUE) # duplicateGeoms to include area without data
