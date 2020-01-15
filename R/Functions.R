@@ -6,10 +6,22 @@
 #' @param IndividuelPopulationFile Individual input ;-separated population file
 #' @param IndividuelMCVFile Individual input ;-separated vaccination file
 #' @param AggregatedPopulationFile Aggregated input ;-separated population file
-#' @param AdministrativeMCVFile Aggregated input ;-separated vaccination file
+#' @param AggregatedMCVFile Aggregated input ;-separated vaccination file
 #' @param AdministrativeMCVFile Administrative input ;-separated vaccination file
 #' @import data.table
 #' @return Create a subdirectory in \code{wdir}
+#' @example
+#' \dontrun{
+#' InputData(
+#'    wdir = 'S:/Data/MCVCovLoc_wdir',
+#'    StatusDate = '2020-01-01',
+#'    IndividuelPopulationFile = "DKIndPop20200101.csv",
+#'    IndividuelMCVFile = 'DKIndVac20200101.csv',
+#'    AggregatedPopulationFile = NA,
+#'    AggregatedMCVFile = NA,
+#'    AdministrativeMCVFile = NA
+#'    )
+#' }
 InputData <- function(wdir, StatusDate,
                       IndividuelPopulationFile = NA,
                       IndividuelMCVFile = NA,
@@ -17,7 +29,7 @@ InputData <- function(wdir, StatusDate,
                       AggregatedMCVFile = NA,
                       AdministrativeMCVFile = NA) {
 
-  # wdir = 'S:/Data/MCVCovLoc'
+  # wdir = 'S:/Data/MCVCovLoc_wdir'
   # StatusDate = '2020-01-01'
   # IndividuelPopulationFile = "DKIndPop20200101.csv"
   # IndividuelMCVFile = 'DKIndVac20200101.csv'
@@ -320,6 +332,14 @@ TimeMonth <- function(StartDate, EndDate) {
 #' @import data.table
 #' @import ggplot2
 #' @return Graphs
+#' @example
+#' \dontrun{
+#' VacCovGraphs(
+#'   wdir = 'S:/Data/MCVCovLoc',
+#'   StatusDate = '2020-01-01',
+#'   NUTSlevel = 2
+#' )
+#' }
 VacCovGraphs <- function(wdir, StatusDate, NUTSlevel) {
 
   if (!dir.exists(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data"))) {
@@ -403,6 +423,15 @@ VacCovGraphs <- function(wdir, StatusDate, NUTSlevel) {
 #' @import raster
 #' @import tmap
 #' @return map
+#' @example
+#' \dontrun{
+#' MapCov(
+#'   wdir = 'S:/Data/MCVCovLoc',
+#'   StatusDate = '2020-01-01',
+#'   BirthCohort = 2005,
+#'   dose = 1
+#' )
+#' }
 MapCov <- function(wdir, StatusDate, BirthCohort, dose) {
 
   if (!dir.exists(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data"))) {

@@ -26,6 +26,8 @@ InputData(
 
 \item{AggregatedPopulationFile}{Aggregated input ;-separated population file}
 
+\item{AggregatedMCVFile}{Aggregated input ;-separated vaccination file}
+
 \item{AdministrativeMCVFile}{Administrative input ;-separated vaccination file}
 }
 \value{
