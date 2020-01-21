@@ -67,6 +67,3 @@ DKIndVac <- function(ExtractDate, wdir) {
   write.table(IndVac[, c("ExtractDate", "PersonID", "BirthDate", "Gender", "VacDate", "VacType", "ATC", "DoseRecorded")],
               file = paste0(wdir, "/data/DKIndVac", gsub("-", "", ExtractDate), ".csv"), sep = ";", row.names = FALSE)
 }
-
-# DKIndPop('2019-10-01', 'S:/Data/MCVCovLoc_wdir')
-# DKIndVac('2019-10-01', 'S:/Data/MCVCovLoc_wdir')

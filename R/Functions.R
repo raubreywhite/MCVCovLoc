@@ -73,26 +73,26 @@ InputData <- function(wdir, StatusDate,
     return(VacMonth)
   }
 
-  if (!dir.exists(paste0(wdir, "/Study_", gsub("-", "", StatusDate)))) {
-    dir.create(paste0(wdir, "/Study_", gsub("-", "", StatusDate)))
+  if (!dir.exists(paste0(wdir, "/Status_", gsub("-", "", StatusDate)))) {
+    dir.create(paste0(wdir, "/Status_", gsub("-", "", StatusDate)))
   }
-  if (!dir.exists(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/InputData"))) {
-    dir.create(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/InputData"))
+  if (!dir.exists(paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/InputData"))) {
+    dir.create(paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/InputData"))
   }
   for (f in c(IndividuelPopulationFile, IndividuelMCVFile, AggregatedPopulationFile, AggregatedMCVFile, AdministrativeMCVFile)) {
     if (!is.na(f)) {
-      file.copy(from = paste0(wdir, "/data/", f), to = paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/InputData/", f),
+      file.copy(from = paste0(wdir, "/data/", f), to = paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/InputData/", f),
                 overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
     }
   }
-  if (!dir.exists(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data"))) {
-    dir.create(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data"))
+  if (!dir.exists(paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Data"))) {
+    dir.create(paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Data"))
   }
-  saveRDS(AggPop, file = paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data/AggPop.RDS"))
-  saveRDS(AggVac, file = paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data/AggVac.RDS"))
-  saveRDS(VacCov(wdir, StatusDate, AggPop, AggVac), file = paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))
-  if (!dir.exists(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Output"))) {
-    dir.create(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Output"))
+  saveRDS(AggPop, file = paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Data/AggPop.RDS"))
+  saveRDS(AggVac, file = paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Data/AggVac.RDS"))
+  saveRDS(VacCov(wdir, StatusDate, AggPop, AggVac), file = paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))
+  if (!dir.exists(paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Output"))) {
+    dir.create(paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Output"))
   }
 
   VacCovGraphs(wdir, StatusDate, 0)
@@ -342,14 +342,14 @@ TimeMonth <- function(StartDate, EndDate) {
 #' }
 VacCovGraphs <- function(wdir, StatusDate, NUTSlevel) {
 
-  if (!dir.exists(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data"))) {
-    stop(paste0("ERROR: Directory don't exist: ", wdir, "/Study_", gsub("-", "", StatusDate), "/Data"))
+  if (!dir.exists(paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Data"))) {
+    stop(paste0("ERROR: Directory don't exist: ", wdir, "/Status_", gsub("-", "", StatusDate), "/Data"))
   }
-  if (!file.exists(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))) {
-    stop(paste0("ERROR: Data don't exist: ", wdir, "/Study_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))
+  if (!file.exists(paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))) {
+    stop(paste0("ERROR: Data don't exist: ", wdir, "/Status_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))
   }
 
-  VacMonth <- readRDS(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))
+  VacMonth <- readRDS(paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))
 
   VacMonth$nuts <- substr(VacMonth$nuts, 1, NUTSlevel + 2)
   VacMonth <- data.table::setDT(VacMonth)[, .(N = sum(N), cVacD1 = sum(cVacD1), cVacD2 = sum(cVacD2)), keyby = .(nuts, birthyear, vacagemonth)]
@@ -375,7 +375,7 @@ VacCovGraphs <- function(wdir, StatusDate, NUTSlevel) {
       scale_x_continuous(breaks = c(seq(0, 150, by = 6))) +
       labs(caption = paste("Status", StatusDate))
     suppressWarnings(
-      ggsave(file = paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Output/CovMonthD1_", n, ".png"), CovMonthD1, width = 30, height = 21, units = "cm")
+      ggsave(file = paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Output/CovMonthD1_", n, ".png"), CovMonthD1, width = 30, height = 21, units = "cm")
     )
     # Dose 2
     CovMonthD2 <- ggplot(pdata, aes(x = vacagemonth)) +
@@ -386,7 +386,7 @@ VacCovGraphs <- function(wdir, StatusDate, NUTSlevel) {
       scale_x_continuous(breaks = c(seq(0, 150, by = 6))) +
       labs(caption = paste("Status", StatusDate))
     suppressWarnings(
-      ggsave(file = paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Output/CovMonthD2_", n, ".png"), CovMonthD2, width = 30, height = 21, units = "cm")
+      ggsave(file = paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Output/CovMonthD2_", n, ".png"), CovMonthD2, width = 30, height = 21, units = "cm")
     )
     ### Coverage by BirthYear ###
     # Dose 1
@@ -397,7 +397,7 @@ VacCovGraphs <- function(wdir, StatusDate, NUTSlevel) {
       theme(plot.title = element_text(hjust = 0.5)) +
       labs(caption = paste("Status", StatusDate))
     suppressWarnings(
-      ggsave(file = paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Output/CovBirthCohortD1_", n, ".png"), CovBirthCohortD1, width = 30, height = 21, units = "cm")
+      ggsave(file = paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Output/CovBirthCohortD1_", n, ".png"), CovBirthCohortD1, width = 30, height = 21, units = "cm")
     )
     # Dose 2
     CovBirthCohortD2 <- ggplot(data.table::setDT(VacMonth)[nuts == n, .SD[.N], by = birthyear]) +
@@ -407,7 +407,7 @@ VacCovGraphs <- function(wdir, StatusDate, NUTSlevel) {
       theme(plot.title = element_text(hjust = 0.5)) +
       labs(caption = paste("Status", StatusDate))
     suppressWarnings(
-      ggsave(file = paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Output/CovBirthCohortD2_", n, ".png"), CovBirthCohortD2, width = 30, height = 21, units = "cm")
+      ggsave(file = paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Output/CovBirthCohortD2_", n, ".png"), CovBirthCohortD2, width = 30, height = 21, units = "cm")
     )
   }
 }
@@ -434,14 +434,14 @@ VacCovGraphs <- function(wdir, StatusDate, NUTSlevel) {
 #' }
 MapCov <- function(wdir, StatusDate, BirthCohort, dose) {
 
-  if (!dir.exists(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data"))) {
-    stop(paste0("ERROR: Directory don't exist: ", wdir, "/Study_", gsub("-", "", StatusDate), "/Data"))
+  if (!dir.exists(paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Data"))) {
+    stop(paste0("ERROR: Directory don't exist: ", wdir, "/Status_", gsub("-", "", StatusDate), "/Data"))
   }
-  if (!file.exists(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))) {
-    stop(paste0("ERROR: Data don't exist: ", wdir, "/Study_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))
+  if (!file.exists(paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))) {
+    stop(paste0("ERROR: Data don't exist: ", wdir, "/Status_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))
   }
 
-  X <- readRDS(paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))
+  X <- readRDS(paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Data/NUTSVacMonth.RDS"))
   X$CovD1 <- 100*X$cVacD1/X$N
   X$CovD2 <- 100*X$cVacD2/X$N
   X <- setDT(X)[birthyear == BirthCohort, .SD[.N], by = nuts]
@@ -465,6 +465,6 @@ MapCov <- function(wdir, StatusDate, BirthCohort, dose) {
     tm_layout(bg.color = "lightblue", earth.boundary = TRUE, space.color="grey90") +
     tm_credits(paste("Status", StatusDate), align = "left")
 
-  tmap_save(map, file = paste0(wdir, "/Study_", gsub("-", "", StatusDate), "/Output/map_BirthCohort", BirthCohort, "_D", dose, ".png"),
+  tmap_save(map, file = paste0(wdir, "/Status_", gsub("-", "", StatusDate), "/Output/map_BirthCohort", BirthCohort, "_D", dose, ".png"),
             width = 1920, height = 1080, asp = 0, verbose = )
 }
